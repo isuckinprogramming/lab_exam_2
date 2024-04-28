@@ -1,0 +1,17 @@
+{
+  "name": "it26l_2nd_laboratory_exam",
+  "version": "1.0.0",
+  "description": "This is for the 2nd laboratory exam that is related to posting an image and updating the image.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Borgz",
+  "license": "SEE LICENSE IN license.txt",
+  "dependencies": {
+    "bootstrap": "^5.3.3",
+    "datatables.net-dt": "^2.0.5",
+    "jquery": "^3.7.1",
+    "sweetalert2": "^11.10.8"
+  }
+}
