@@ -13,11 +13,8 @@ Swal.fire({
 
 function respondToRequestForDatabaseInput(response, successMessage, modalId,selectorOfPreviewImage) { 
         
-  // const status = response.status;
-  // const error = response.error_essage;
-
   if (response.status) {
-
+  
    
     // console.log("Ajax request is working")
     updateTableRow(
@@ -31,7 +28,7 @@ function respondToRequestForDatabaseInput(response, successMessage, modalId,sele
 
     $(`#${modalId}`).modal("hide");
     showAlert('success', 'Success', successMessage) 
-
+    
   } else {
     showAlert('error', 'Error', response.error_message_display);
 
@@ -123,10 +120,6 @@ function requestToDatabase(
   modalId,
   successMessageToUser
 ) { 
-  
-  // const dataFromInputs = retrieveKeyValueDataFromInputs("container-for-input-label", "table-entry-input")
-  // e.preventDefault();
-
   const formData = prepareFormData(formId, pfpInputId);
 
   if ($("#" + inputId).val() == "") { 
@@ -136,53 +129,12 @@ function requestToDatabase(
 
   if (!formData) {
     return;
-  } else { 
+  } 
     $(`#${pfpInputId}`).val("");
-
-    $.ajax({
-      method: "POST",
-      url: phpActionUrl,
-      data: formData,
-      // contentType: "multipart/form-data",
-      contentType: false,
-      processData: false,
-      dataType: 'JSON',
-      success: function (response) {
-        respondToRequestForDatabaseInput(
-          response,
-          successMessageToUser,
-          modalId,
-          "#edit-profile-picture-preview"
-        )
-      },
-      error: function (errorObject) {
-        handleErrorFromDatabaseRequest(errorObject, modalId);
-      } 
-    });
-  }
-}
-
-
-function addUserToDatabase(e, inputId) { 
-  
-  e.preventDefault();
-
-  
-  const formData = prepareFormData("addUserForm", "input-add-user-profile-picture");
-  
-  
-  if ($("#" + inputId).val() == "") { 
-    showAlert("error", "Please Fill All Fields", "Missing fields");
-    return;
-  }
-
-  if (!formData) { 
-    return; 
-  }
 
   $.ajax({
     method: "POST",
-    url: "./../php/add_user.php",
+    url: phpActionUrl,
     data: formData,
     // contentType: "multipart/form-data",
     contentType: false,
@@ -191,16 +143,16 @@ function addUserToDatabase(e, inputId) {
     success: function (response) {
       respondToRequestForDatabaseInput(
         response,
-        'Entry added!',
-        "add-user-modal",
-        "#add-user-profile-picture-preview"
+        successMessageToUser,
+        modalId,
+        "#edit-profile-picture-preview"
       )
     },
     error: function (errorObject) {
-      handleErrorFromDatabaseRequest(errorObject, "add-user-modal");
+      handleErrorFromDatabaseRequest(errorObject, modalId);
     } 
-
   });
+  
 }
 
 function displayContentsOfUserToEditModal() { 
@@ -232,16 +184,17 @@ function displayPreviewImage(inputFileEvent,idOfPreviewImageTag) {
 
   let previewedImageSrc = "";
   const fileReader = new FileReader();
+
   fileReader.onload = (fileReaderEvent) => { 
 
     previewedImageSrc = fileReaderEvent.target.result;
     $(`#${idOfPreviewImageTag}`).attr('src',previewedImageSrc );
-    // fileReaderEvent.target.result;
   }
 
   fileReader.readAsDataURL(file);
   return previewedImageSrc;
 }
+
 let currentImageInPreview = "";
 // Preview images
 $("#edit-profile-picture").on(
@@ -265,14 +218,24 @@ $("table tbody tr.user-container").on(
 $("#add-new-user").on(
   'click',
   function (e) { 
-    addUserToDatabase(e,"input-add-user-name");
+    e.preventDefault();
+    requestToDatabase(
+      "register_new_user",
+      "./../php/add_user.php",
+      "addUserForm",
+      "input-add-user-name",
+      "input-add-user-profile-picture",
+      "add-user-modal",
+      "USER REGISTERED SUCCESSFULLY!"
+    );
   }
 );
 
 $("#edit-user-trigger").on(
   "click", 
   function (e) {
-    e.preventDefault
+    e.preventDefault();
+
     requestToDatabase(
       "update_user_entry",
       "./../php/update_entry.php",
@@ -284,5 +247,3 @@ $("#edit-user-trigger").on(
     );  
   }
 )
-
-// $("#user-display").DataTable();
